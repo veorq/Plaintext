@@ -1,0 +1,23 @@
+name: Build Windows app
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build Plaintext for Windows
+        run: dotnet build Windows/Plaintext.Windows.csproj --configuration Release --nologo

@@ -1,3 +1,5 @@
 .build/
 Plaintext.app/
 .DS_Store
+Windows/bin/
+Windows/obj/
