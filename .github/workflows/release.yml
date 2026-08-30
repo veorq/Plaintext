@@ -1,0 +1,36 @@
+name: Build beta release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-14
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build Plaintext
+        run: ./build-app.sh
+
+      - name: Package app
+        run: |
+          asset="Plaintext-${GITHUB_REF_NAME}-macos-$(uname -m).zip"
+          ditto -c -k --keepParent Plaintext.app "$asset"
+          shasum -a 256 "$asset" > "$asset.sha256"
+
+      - name: Publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Plaintext ${GITHUB_REF_NAME}" \
+            --notes "First public beta of Plaintext for macOS." \
+            --prerelease \
+            Plaintext-*.zip Plaintext-*.zip.sha256
