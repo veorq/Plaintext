@@ -93,4 +93,4 @@ jobs:
       - name: Upload Linux release files
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" Plaintext-*-linux-x86_64.tar.gz Plaintext-*-linux-x86_64.tar.gz.sha256
+        run: gh release upload "$GITHUB_REF_NAME" Linux/dist/Plaintext-*-linux-x86_64.tar.gz Linux/dist/Plaintext-*-linux-x86_64.tar.gz.sha256
