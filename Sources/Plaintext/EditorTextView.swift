@@ -48,6 +48,7 @@ struct EditorTextView: NSViewRepresentable {
         textView.autoresizingMask = [.width]
         context.coordinator.textView = textView
         configure(textView, with: settings)
+        context.coordinator.markConfigurationApplied(for: settings)
         scrollView.documentView = textView
         onEditorReady(textView)
         DispatchQueue.main.async {
@@ -64,7 +65,10 @@ struct EditorTextView: NSViewRepresentable {
             textView.replaceText(text)
             context.coordinator.isSynchronising = false
         }
-        configure(textView, with: settings)
+        if context.coordinator.needsConfiguration(for: settings) {
+            configure(textView, with: settings)
+            context.coordinator.markConfigurationApplied(for: settings)
+        }
     }
 
     private func configure(_ textView: PlainTextView, with settings: AppSettings) {
@@ -89,9 +93,20 @@ struct EditorTextView: NSViewRepresentable {
         var parent: EditorTextView
         weak var textView: PlainTextView?
         var isSynchronising = false
+        private var appliedFont: FontChoice?
+        private var appliedTheme: EditorTheme?
 
         init(parent: EditorTextView) {
             self.parent = parent
+        }
+
+        func needsConfiguration(for settings: AppSettings) -> Bool {
+            appliedFont != settings.font || appliedTheme != settings.theme
+        }
+
+        func markConfigurationApplied(for settings: AppSettings) {
+            appliedFont = settings.font
+            appliedTheme = settings.theme
         }
 
         func textDidChange(_ notification: Notification) {

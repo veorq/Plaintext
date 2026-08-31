@@ -59,7 +59,6 @@ struct ContentView: View {
         .onAppear {
             document.showAlert = { interface.alertMessage = $0 }
             requestFullscreenOnce()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { document.focusEditor() }
         }
         .onChange(of: document.displayTitle) { _, title in
             NSApplication.shared.keyWindow?.title = title
@@ -102,7 +101,7 @@ struct ContentView: View {
     private func requestFullscreenOnce() {
         guard !didRequestFullscreen else { return }
         didRequestFullscreen = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+        DispatchQueue.main.async {
             guard let window = NSApplication.shared.windows.first, !window.styleMask.contains(.fullScreen) else { return }
             window.toggleFullScreen(nil)
         }
