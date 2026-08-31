@@ -1,4 +1,5 @@
 import AppKit
+import CoreText
 import SwiftUI
 
 enum EditorTheme: String, CaseIterable, Identifiable {
@@ -62,23 +63,19 @@ private extension NSColor {
 }
 
 enum FontChoice: String, CaseIterable, Identifiable {
-    case newYork
-    case iowan
-    case charter
-    case sfPro
-    case avenirNext
-    case helveticaNeue
+    case literata
+    case newsreader
+    case workSans
+    case atkinsonHyperlegible
 
     var id: String { rawValue }
 
     var name: String {
         switch self {
-        case .newYork: "New York"
-        case .iowan: "Iowan Old Style"
-        case .charter: "Charter"
-        case .sfPro: "SF Pro"
-        case .avenirNext: "Avenir Next"
-        case .helveticaNeue: "Helvetica Neue"
+        case .literata: "Literata"
+        case .newsreader: "Newsreader"
+        case .workSans: "Work Sans"
+        case .atkinsonHyperlegible: "Atkinson Hyperlegible"
         }
     }
 
@@ -86,27 +83,36 @@ enum FontChoice: String, CaseIterable, Identifiable {
 
     var isSerif: Bool {
         switch self {
-        case .newYork, .iowan, .charter: true
-        case .sfPro, .avenirNext, .helveticaNeue: false
+        case .literata, .newsreader: true
+        case .workSans, .atkinsonHyperlegible: false
         }
     }
 
+    static func registerBundledFonts() {
+        _ = bundledFontsRegistered
+    }
+
     func nsFont(size: CGFloat) -> NSFont {
-        switch self {
-        case .newYork:
-            NSFont(name: "NewYork-Regular", size: size) ?? NSFont(name: "IowanOldStyle-Roman", size: size) ?? NSFont(name: "Times-Roman", size: size) ?? .systemFont(ofSize: size)
-        case .iowan:
-            NSFont(name: "IowanOldStyle-Roman", size: size) ?? NSFont(name: "Times-Roman", size: size) ?? .systemFont(ofSize: size)
-        case .charter:
-            NSFont(name: "Charter-Roman", size: size) ?? NSFont(name: "Times-Roman", size: size) ?? .systemFont(ofSize: size)
-        case .sfPro:
-            .systemFont(ofSize: size, weight: .regular)
-        case .avenirNext:
-            NSFont(name: "AvenirNext-Regular", size: size) ?? .systemFont(ofSize: size, weight: .regular)
-        case .helveticaNeue:
-            NSFont(name: "HelveticaNeue", size: size) ?? .systemFont(ofSize: size, weight: .regular)
+        Self.registerBundledFonts()
+
+        return switch self {
+        case .literata:
+            NSFont(name: "Literata-Regular", size: size) ?? .systemFont(ofSize: size)
+        case .newsreader:
+            NSFont(name: "Newsreader16pt-Regular", size: size) ?? .systemFont(ofSize: size)
+        case .workSans:
+            NSFont(name: "WorkSans-Regular", size: size) ?? .systemFont(ofSize: size)
+        case .atkinsonHyperlegible:
+            NSFont(name: "AtkinsonHyperlegible-Regular", size: size) ?? .systemFont(ofSize: size)
         }
     }
+
+    private static let bundledFontsRegistered: Void = {
+        let fontURLs = Bundle.main.urls(forResourcesWithExtension: "ttf", subdirectory: "Fonts") ?? []
+        for url in fontURLs {
+            CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+        }
+    }()
 }
 
 enum TypewriterSound: String, CaseIterable, Identifiable {
@@ -132,7 +138,7 @@ final class AppSettings: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         theme = EditorTheme(rawValue: defaults.string(forKey: "plaintext.theme") ?? "paper") ?? .paper
-        font = FontChoice(rawValue: defaults.string(forKey: "plaintext.font") ?? "newYork") ?? .newYork
+        font = FontChoice(rawValue: defaults.string(forKey: "plaintext.font") ?? "literata") ?? .literata
         typewriterSound = TypewriterSound(rawValue: defaults.string(forKey: "plaintext.sound") ?? "off") ?? .off
         showsWordCount = defaults.object(forKey: "plaintext.showsWordCount") as? Bool ?? false
     }

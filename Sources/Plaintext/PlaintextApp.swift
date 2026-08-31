@@ -74,5 +74,9 @@ struct PlaintextApp: App {
 }
 
 final class PlaintextAppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        FontChoice.registerBundledFonts()
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 }

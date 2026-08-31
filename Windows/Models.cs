@@ -47,19 +47,17 @@ public sealed record FontChoice(string Name, string Family)
 {
     public static IReadOnlyList<FontChoice> All { get; } =
     [
-        new("Georgia", "Georgia"),
-        new("Palatino", "Palatino Linotype"),
-        new("Cambria", "Cambria"),
-        new("Segoe UI", "Segoe UI"),
-        new("Arial", "Arial"),
-        new("Verdana", "Verdana")
+        new("Literata", "./Assets/Fonts/#Literata"),
+        new("Newsreader", "./Assets/Fonts/#Newsreader"),
+        new("Work Sans", "./Assets/Fonts/#Work Sans"),
+        new("Atkinson Hyperlegible", "./Assets/Fonts/#Atkinson Hyperlegible")
     ];
 }
 
 public sealed class AppSettings
 {
     public EditorTheme Theme { get; set; } = EditorTheme.Paper;
-    public string FontName { get; set; } = "Georgia";
+    public string FontName { get; set; } = "Literata";
     public bool KeySoundEnabled { get; set; }
     public bool ShowsWordCount { get; set; }
     public string? LastDocumentPath { get; set; }
@@ -89,7 +87,12 @@ public static class SettingsStore
     {
         try
         {
-            return JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(SettingsPath), Options) ?? new AppSettings();
+            var settings = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(SettingsPath), Options) ?? new AppSettings();
+            if (!FontChoice.All.Any(font => font.Name == settings.FontName))
+            {
+                settings.FontName = FontChoice.All[0].Name;
+            }
+            return settings;
         }
         catch
         {

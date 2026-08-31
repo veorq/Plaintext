@@ -14,4 +14,6 @@ On macOS, run `./build-app.sh`, then open `Plaintext.app`.
 
 On Windows, run `dotnet build Windows/Plaintext.Windows.csproj --configuration Release`.
 
-Plaintext is currently distributed without a license; all rights reserved.
+## License
+
+Plaintext is released under the MIT License. The bundled typefaces are released under the SIL Open Font License, Version 1.1; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

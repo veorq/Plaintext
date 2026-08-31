@@ -437,7 +437,7 @@ public partial class MainWindow : Window
         Editor.Foreground = palette.ForegroundBrush;
         Editor.CaretBrush = palette.ForegroundBrush;
         Editor.SelectionBrush = palette.SelectionBrush;
-        Editor.FontFamily = new FontFamily(settings.Font.Family);
+        Editor.FontFamily = new FontFamily(new Uri("pack://application:,,,/"), settings.Font.Family);
         DocumentTitle.Foreground = palette.SecondaryBrush;
         WordCount.Foreground = palette.SecondaryBrush;
         FindBar.Background = palette.BackgroundBrush;
