@@ -31,7 +31,7 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" \
             --title "Plaintext ${GITHUB_REF_NAME}" \
-            --notes "Beta release for macOS and Windows. The Windows build is a self-contained, unsigned 64-bit executable; Windows may show a first-launch security warning." \
+            --notes "Beta release for macOS, Windows, and Linux. The Windows build is a self-contained, unsigned 64-bit executable; Windows may show a first-launch security warning. The Linux archive requires GTK 4 and Fontconfig." \
             --prerelease \
             Plaintext-*.zip Plaintext-*.zip.sha256
 
@@ -75,3 +75,22 @@ jobs:
         run: |
           $assets = Get-ChildItem -Path "Plaintext-*.zip", "Plaintext-*.zip.sha256" | ForEach-Object { $_.FullName }
           gh release upload $env:GITHUB_REF_NAME $assets
+
+  release-linux:
+    needs: release-macos
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install GTK build dependencies
+        run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libfontconfig1-dev
+
+      - name: Package Linux app
+        run: ./build-linux.sh "$GITHUB_REF_NAME"
+
+      - name: Upload Linux release files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" Plaintext-*-linux-x86_64.tar.gz Plaintext-*-linux-x86_64.tar.gz.sha256

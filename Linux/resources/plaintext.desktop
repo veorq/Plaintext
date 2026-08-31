@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Plaintext
+Comment=A quiet, fullscreen-first editor for plain text
+Exec=Plaintext
+Icon=plaintext
+Categories=Office;WordProcessor;
+MimeType=text/plain;text/markdown;
+Terminal=false
+StartupNotify=true

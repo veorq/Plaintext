@@ -1,0 +1,21 @@
+name: Build Linux app
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install GTK build dependencies
+        run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libfontconfig1-dev
+
+      - name: Build Plaintext for Linux
+        run: cargo build --manifest-path Linux/Cargo.toml --release --locked

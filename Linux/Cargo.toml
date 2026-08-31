@@ -1,0 +1,14 @@
+[package]
+name = "plaintext-linux"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "A quiet, fullscreen-first editor for plain text."
+
+[[bin]]
+name = "Plaintext"
+path = "src/main.rs"
+
+[dependencies]
+gtk4 = "0.10"
+regex = "1.11"

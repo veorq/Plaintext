@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>jp.aumasson.Plaintext</id>
+  <name>Plaintext</name>
+  <summary>A quiet, fullscreen-first editor for plain text</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <description>
+    <p>Plaintext is a local, fullscreen-first editor for writing without distractions.</p>
+  </description>
+  <launchable type="desktop-id">plaintext.desktop</launchable>
+  <developer_name>JP Aumasson</developer_name>
+  <url type="homepage">https://www.aumasson.jp/plaintext/</url>
+  <url type="bugtracker">https://github.com/veorq/Plaintext/issues</url>
+  <provides>
+    <binary>Plaintext</binary>
+  </provides>
+</component>

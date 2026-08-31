@@ -3,3 +3,5 @@ Plaintext.app/
 .DS_Store
 Windows/bin/
 Windows/obj/
+Linux/target/
+Linux/dist/
