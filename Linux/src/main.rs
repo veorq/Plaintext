@@ -496,8 +496,11 @@ fn show_find_dialog(state: &Rc<RefCell<AppState>>) {
         )
     });
     let all_state = state.clone();
-    replace_all_button
-        .connect_clicked(move |_| replace_all(&all_state, &find.text(), &replacement.text()));
+    let all_find = find.clone();
+    let all_replacement = replacement.clone();
+    replace_all_button.connect_clicked(move |_| {
+        replace_all(&all_state, &all_find.text(), &all_replacement.text())
+    });
     dialog.connect_response(|dialog, _| dialog.close());
     dialog.present();
     find.grab_focus();
