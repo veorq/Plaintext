@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build-macos:
+  release-macos:
     runs-on: macos-15
 
     steps:
@@ -25,15 +25,18 @@ jobs:
           ditto -c -k --keepParent Plaintext.app "$asset"
           shasum -a 256 "$asset" > "$asset.sha256"
 
-      - name: Upload macOS release files
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-release-files
-          path: |
-            Plaintext-*.zip
-            Plaintext-*.zip.sha256
+      - name: Publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Plaintext ${GITHUB_REF_NAME}" \
+            --notes "Beta release for macOS and Windows. The Windows build is a self-contained, unsigned 64-bit executable; Windows may show a first-launch security warning." \
+            --prerelease \
+            Plaintext-*.zip Plaintext-*.zip.sha256
 
-  build-windows:
+  release-windows:
+    needs: release-macos
     runs-on: windows-latest
 
     steps:
@@ -66,37 +69,9 @@ jobs:
           "$hash  $asset" | Set-Content -NoNewline "$asset.sha256"
 
       - name: Upload Windows release files
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-release-files
-          path: |
-            Plaintext-*.zip
-            Plaintext-*.zip.sha256
-
-  release:
-    needs: [build-macos, build-windows]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download macOS release files
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-release-files
-          path: release-files/macos
-
-      - name: Download Windows release files
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-release-files
-          path: release-files/windows
-
-      - name: Publish prerelease
+        shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            --title "Plaintext ${GITHUB_REF_NAME}" \
-            --notes "Beta release for macOS and Windows. The Windows build is a self-contained, unsigned 64-bit executable; Windows may show a first-launch security warning." \
-            --prerelease \
-            release-files/macos/Plaintext-*.zip release-files/macos/Plaintext-*.zip.sha256 \
-            release-files/windows/Plaintext-*.zip release-files/windows/Plaintext-*.zip.sha256
+          $assets = Get-ChildItem -Path "Plaintext-*.zip", "Plaintext-*.zip.sha256" | ForEach-Object { $_.FullName }
+          gh release upload $env:GITHUB_REF_NAME $assets
