@@ -337,13 +337,14 @@ fn new_document(state: &Rc<RefCell<AppState>>) {
 
 fn show_open_dialog(state: &Rc<RefCell<AppState>>) {
     let window = state.borrow().window.clone();
-    let dialog = gtk::FileChooserNative::builder()
+    let dialog = gtk::FileChooserDialog::builder()
         .title("Open a document — it will replace the current one")
         .transient_for(&window)
+        .modal(true)
         .action(gtk::FileChooserAction::Open)
-        .accept_label("Open")
-        .cancel_label("Cancel")
         .build();
+    dialog.add_button("Cancel", gtk::ResponseType::Cancel);
+    dialog.add_button("Open", gtk::ResponseType::Accept);
     let filter = gtk::FileFilter::new();
     filter.set_name(Some("Plain text (*.md, *.txt)"));
     filter.add_pattern("*.md");
@@ -357,9 +358,9 @@ fn show_open_dialog(state: &Rc<RefCell<AppState>>) {
                 open_document(&open_state, path);
             }
         }
-        dialog.hide();
+        dialog.close();
     });
-    dialog.show();
+    dialog.present();
 }
 
 fn open_document(state: &Rc<RefCell<AppState>>, path: PathBuf) {
@@ -399,13 +400,14 @@ fn show_save_dialog(state: &Rc<RefCell<AppState>>) {
                 .unwrap_or_else(|| "Untitled.md".into()),
         )
     };
-    let dialog = gtk::FileChooserNative::builder()
+    let dialog = gtk::FileChooserDialog::builder()
         .title("Save a plain text document")
         .transient_for(&window)
+        .modal(true)
         .action(gtk::FileChooserAction::Save)
-        .accept_label("Save")
-        .cancel_label("Cancel")
         .build();
+    dialog.add_button("Cancel", gtk::ResponseType::Cancel);
+    dialog.add_button("Save", gtk::ResponseType::Accept);
     dialog.set_current_name(&filename);
     let filter = gtk::FileFilter::new();
     filter.set_name(Some("Markdown (*.md)"));
@@ -430,9 +432,9 @@ fn show_save_dialog(state: &Rc<RefCell<AppState>>) {
                 }
             }
         }
-        dialog.hide();
+        dialog.close();
     });
-    dialog.show();
+    dialog.present();
 }
 
 fn undo(state: &Rc<RefCell<AppState>>) {
