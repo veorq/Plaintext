@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Plaintext</AssemblyName>
     <RootNamespace>Plaintext.Windows</RootNamespace>
+    <ApplicationIcon>Assets/Plaintext.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 </Project>

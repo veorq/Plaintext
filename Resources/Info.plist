@@ -8,6 +8,8 @@
     <string>Plaintext</string>
     <key>CFBundleExecutable</key>
     <string>Plaintext</string>
+    <key>CFBundleIconFile</key>
+    <string>Plaintext.icns</string>
     <key>CFBundleIdentifier</key>
     <string>com.plaintext.editor</string>
     <key>CFBundleInfoDictionaryVersion</key>
