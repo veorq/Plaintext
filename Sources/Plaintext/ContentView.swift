@@ -308,44 +308,52 @@ private struct CommandPalette: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            TextField("Type a command", text: $query)
-                .textFieldStyle(.plain)
-                .font(.system(size: 16))
-                .padding(16)
-                .focused($fieldFocused)
-                .onSubmit { runFirstAction() }
-
-            Divider()
+        ZStack {
+            Color.black.opacity(0.001)
+                .ignoresSafeArea()
+                .contentShape(Rectangle())
+                .onTapGesture(perform: onDismiss)
 
             VStack(spacing: 0) {
-                ForEach(filteredActions) { item in
-                    Button {
-                        item.action()
-                        onDismiss()
-                    } label: {
-                        HStack {
-                            Text(item.title)
-                            Spacer()
-                            Text(item.shortcut)
-                                .foregroundStyle(.secondary)
+                TextField("Type a command", text: $query)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 16))
+                    .padding(16)
+                    .focused($fieldFocused)
+                    .onSubmit { runFirstAction() }
+
+                Divider()
+
+                VStack(spacing: 0) {
+                    ForEach(filteredActions) { item in
+                        Button {
+                            item.action()
+                            onDismiss()
+                        } label: {
+                            HStack {
+                                Text(item.title)
+                                Spacer()
+                                Text(item.shortcut)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .font(.system(size: 13))
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .contentShape(Rectangle())
                         }
-                        .font(.system(size: 13))
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
+                .padding(.vertical, 5)
             }
-            .padding(.vertical, 5)
+            .frame(width: 410)
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.12), lineWidth: 1))
+            .shadow(color: .black.opacity(0.26), radius: 28, y: 12)
         }
-        .frame(width: 410)
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.12), lineWidth: 1))
-        .shadow(color: .black.opacity(0.26), radius: 28, y: 12)
         .onAppear { fieldFocused = true }
+        .onExitCommand(perform: onDismiss)
     }
 
     private func runFirstAction() {

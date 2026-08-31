@@ -8,8 +8,12 @@ struct PlaintextApp: App {
     @StateObject private var document = DocumentController()
     @StateObject private var interface = InterfaceState()
 
+    init() {
+        NSWindow.allowsAutomaticWindowTabbing = false
+    }
+
     var body: some Scene {
-        WindowGroup {
+        Window("Plaintext", id: "main") {
             ContentView()
                 .environmentObject(settings)
                 .environmentObject(document)
@@ -76,6 +80,8 @@ struct PlaintextApp: App {
 final class PlaintextAppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         FontChoice.registerBundledFonts()
+        NSWindow.allowsAutomaticWindowTabbing = false
+        NSApplication.shared.windows.forEach { $0.tabbingMode = .disallowed }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
