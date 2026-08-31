@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  build-macos:
     runs-on: macos-15
 
     steps:
@@ -25,12 +25,77 @@ jobs:
           ditto -c -k --keepParent Plaintext.app "$asset"
           shasum -a 256 "$asset" > "$asset.sha256"
 
+      - name: Upload macOS release files
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release-files
+          path: |
+            Plaintext-*.zip
+            Plaintext-*.zip.sha256
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish self-contained Windows app
+        run: >
+          dotnet publish Windows/Plaintext.Windows.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:DebugType=None
+          -p:DebugSymbols=false
+          --output publish
+
+      - name: Package Windows app
+        shell: pwsh
+        run: |
+          $asset = "Plaintext-$env:GITHUB_REF_NAME-windows-x64.zip"
+          Compress-Archive -Path "publish/Plaintext.exe" -DestinationPath $asset
+          $hash = (Get-FileHash $asset -Algorithm SHA256).Hash.ToLower()
+          "$hash  $asset" | Set-Content -NoNewline "$asset.sha256"
+
+      - name: Upload Windows release files
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release-files
+          path: |
+            Plaintext-*.zip
+            Plaintext-*.zip.sha256
+
+  release:
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download macOS release files
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-release-files
+          path: release-files
+
+      - name: Download Windows release files
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-release-files
+          path: release-files
+
       - name: Publish prerelease
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" \
             --title "Plaintext ${GITHUB_REF_NAME}" \
-            --notes "First public beta of Plaintext for macOS." \
+            --notes "Beta release for macOS and Windows. The Windows build is a self-contained, unsigned 64-bit executable; Windows may show a first-launch security warning." \
             --prerelease \
-            Plaintext-*.zip Plaintext-*.zip.sha256
+            release-files/Plaintext-*.zip release-files/Plaintext-*.zip.sha256

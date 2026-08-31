@@ -6,7 +6,7 @@ A quiet, fullscreen-first editor for plain text.
 - Local autosave and version history
 - No rich text, syntax highlighting, spellcheck, tabs, accounts, or network use
 
-The first beta is for Apple Silicon Macs running macOS 14 or later. A native Windows version lives in `Windows/` and is being prepared for its first beta.
+The beta runs on Apple Silicon Macs running macOS 14 or later, and on 64-bit Windows 10 or 11. The Windows beta is a self-contained executable and does not require a separate .NET installation.
 
 ## Build
 
