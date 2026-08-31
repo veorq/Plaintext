@@ -21,3 +21,10 @@ jobs:
 
       - name: Build Plaintext for Windows
         run: dotnet build Windows/Plaintext.Windows.csproj --configuration Release --nologo
+
+      - name: Check startup window
+        shell: pwsh
+        run: |
+          if (-not (Select-String -Path Windows/App.xaml -Pattern 'StartupUri="MainWindow.xaml"' -Quiet)) {
+            throw "Plaintext must declare its startup window."
+          }
