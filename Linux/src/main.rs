@@ -5,7 +5,7 @@ mod models;
 
 use std::{cell::RefCell, path::PathBuf, rc::Rc, time::Duration};
 
-use gtk::{gdk, gio, glib, prelude::*};
+use gtk::{gdk, glib, prelude::*};
 use gtk4 as gtk;
 use regex::RegexBuilder;
 
@@ -267,7 +267,7 @@ fn synchronise_editor_from_document(state: &Rc<RefCell<AppState>>) {
     state.borrow_mut().synchronising = true;
     let buffer = editor.buffer();
     buffer.set_text(&text);
-    let mut start = buffer.start_iter();
+    let start = buffer.start_iter();
     buffer.place_cursor(&start);
     state.borrow_mut().synchronising = false;
     update_title(state);
@@ -471,10 +471,10 @@ fn show_find_dialog(state: &Rc<RefCell<AppState>>) {
     let buttons = gtk::Box::new(gtk::Orientation::Horizontal, 6);
     let next = gtk::Button::with_label("Next");
     let replace = gtk::Button::with_label("Replace");
-    let replace_all = gtk::Button::with_label("All");
+    let replace_all_button = gtk::Button::with_label("All");
     buttons.append(&next);
     buttons.append(&replace);
-    buttons.append(&replace_all);
+    buttons.append(&replace_all_button);
     content.append(&find);
     content.append(&replacement);
     content.append(&buttons);
@@ -496,7 +496,7 @@ fn show_find_dialog(state: &Rc<RefCell<AppState>>) {
         )
     });
     let all_state = state.clone();
-    replace_all
+    replace_all_button
         .connect_clicked(move |_| replace_all(&all_state, &find.text(), &replacement.text()));
     dialog.connect_response(|dialog, _| dialog.close());
     dialog.present();
