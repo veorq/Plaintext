@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.IO;
 
 namespace Plaintext.Windows;
 
@@ -117,9 +118,10 @@ public sealed class DocumentController
 
     private void RestorePreviousSession()
     {
-        if (!string.IsNullOrWhiteSpace(settings.LastDocumentPath) && File.Exists(settings.LastDocumentPath))
+        var lastDocument = settings.LastDocumentPath;
+        if (!string.IsNullOrWhiteSpace(lastDocument) && File.Exists(lastDocument))
         {
-            Open(settings.LastDocumentPath, out _);
+            Open(lastDocument, out _);
             return;
         }
 
