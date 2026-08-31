@@ -82,13 +82,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: macos-release-files
-          path: release-files
+          path: release-files/macos
 
       - name: Download Windows release files
         uses: actions/download-artifact@v4
         with:
           name: windows-release-files
-          path: release-files
+          path: release-files/windows
 
       - name: Publish prerelease
         env:
@@ -98,4 +98,5 @@ jobs:
             --title "Plaintext ${GITHUB_REF_NAME}" \
             --notes "Beta release for macOS and Windows. The Windows build is a self-contained, unsigned 64-bit executable; Windows may show a first-launch security warning." \
             --prerelease \
-            release-files/Plaintext-*.zip release-files/Plaintext-*.zip.sha256
+            release-files/macos/Plaintext-*.zip release-files/macos/Plaintext-*.zip.sha256 \
+            release-files/windows/Plaintext-*.zip release-files/windows/Plaintext-*.zip.sha256
