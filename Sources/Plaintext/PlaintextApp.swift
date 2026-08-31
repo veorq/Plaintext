@@ -22,6 +22,10 @@ struct PlaintextApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About Plaintext") { appDelegate.showAboutPanel() }
+            }
+
             CommandGroup(replacing: .newItem) {
                 Button("New Plain Document") { document.newDocument() }
                     .keyboardShortcut("n", modifiers: .command)
@@ -85,4 +89,34 @@ final class PlaintextAppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+
+    @MainActor
+    func showAboutPanel() {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        let textAttributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13),
+            .foregroundColor: NSColor.secondaryLabelColor,
+            .paragraphStyle: paragraphStyle
+        ]
+        let credits = NSMutableAttributedString(
+            string: "Source code and documentation:\n",
+            attributes: textAttributes
+        )
+        credits.append(
+            NSAttributedString(
+                string: "github.com/veorq/Plaintext",
+                attributes: [
+                    .font: NSFont.systemFont(ofSize: 13),
+                    .foregroundColor: NSColor.systemBlue,
+                    .link: URL(string: "https://github.com/veorq/Plaintext")!,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue,
+                    .paragraphStyle: paragraphStyle
+                ]
+            )
+        )
+
+        NSApplication.shared.orderFrontStandardAboutPanel(options: [.credits: credits])
+    }
 }
