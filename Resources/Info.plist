@@ -27,6 +27,6 @@
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
-    <string>Plaintext. Local-only writing.</string>
+    <string>Source code and documentation: github.com/veorq/Plaintext</string>
 </dict>
 </plist>
