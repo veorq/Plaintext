@@ -240,7 +240,7 @@ fn apply_settings(state: &Rc<RefCell<AppState>>) {
         .document-title, .word-count {{ color: {secondary}; font-size: 11px; font-weight: 600; }}
         textview.editor, textview.editor text {{
             background-color: {background}; color: {foreground}; caret-color: {foreground};
-            font-family: \"{font}\"; font-size: 19pt;
+            font-family: "{font}"; font-size: 19pt;
         }}
         textview.editor selection {{ background-color: {selection}; color: {foreground}; }}
         entry, combobox, listview, listbox {{ background-color: {background}; color: {foreground}; }}
