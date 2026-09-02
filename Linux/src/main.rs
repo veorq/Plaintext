@@ -31,14 +31,17 @@ struct AppState {
 }
 
 fn main() {
+    // Register the private fonts before GTK creates its Pango font map. Registering
+    // them from `build_ui` is too late on desktops where the map is populated
+    // during application startup, causing every family to fall back to the
+    // desktop's default font.
+    register_bundled_fonts();
     let application = gtk::Application::builder().application_id(APP_ID).build();
     application.connect_activate(build_ui);
     application.run();
 }
 
 fn build_ui(application: &gtk::Application) {
-    register_bundled_fonts();
-
     let settings = Settings::load();
     let document = DocumentController::restore_previous_session(&settings);
     let window = gtk::ApplicationWindow::builder()
