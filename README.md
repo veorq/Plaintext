@@ -18,7 +18,15 @@ Plaintext has separate native applications for each platform. The `Package.swift
 
   On Ubuntu or Debian: `sudo apt install libgtk-4-dev libfontconfig1-dev`.
 
-The Linux release archive contains the executable, bundled fonts, icon, and desktop launcher. Run `Plaintext/Plaintext` from the unpacked archive.
+The Linux release archive contains the executable, bundled fonts, icon, and desktop launcher. Run `Plaintext/Plaintext` directly from the unpacked archive, or install it for the current user:
+
+```sh
+./Plaintext/install-linux.sh
+```
+
+This installs under `~/.local` and does not require root. For a system-wide installation under `/usr/local`, run `sudo ./Plaintext/install-linux.sh --system`. The installed uninstaller is at `~/.local/share/plaintext/uninstall.sh` (or `/usr/local/share/plaintext/uninstall.sh` for a system-wide installation).
+
+`cargo install` is not recommended because it installs only the executable, without the fonts and desktop integration resources required by the application.
 
 ## License
 

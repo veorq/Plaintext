@@ -43,6 +43,15 @@ pub fn resource_directory() -> PathBuf {
             if bundled.is_dir() {
                 return directory.to_path_buf();
             }
+
+            // Installed layouts place the executable in PREFIX/bin and resources
+            // in PREFIX/share/plaintext. This covers both /usr/local and ~/.local.
+            if let Some(prefix) = directory.parent() {
+                let installed = prefix.join("share/plaintext");
+                if installed.join("fonts").is_dir() {
+                    return installed;
+                }
+            }
         }
     }
 
